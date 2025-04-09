@@ -45,24 +45,33 @@ import org.koin.core.annotation.KoinExperimentalAPI
 fun CharactersScreen() {
     val characterViewModel = koinViewModel<CharacterViewModel>()
     val uiState by characterViewModel.uiState.collectAsStateWithLifecycle()
-
-    HandleUIState(uiState)
+    val allCharacters = characterViewModel.allCharacters.collectAsLazyPagingItems()
+    HandleUIState(uiState = uiState, allCharacters = allCharacters)
 }
 
 @Composable
-private fun HandleUIState(uiState: CharacterUIState) {
+private fun HandleUIState(
+    uiState: CharacterUIState,
+    allCharacters: LazyPagingItems<Character>,
+) {
     when (uiState) {
-        is CharacterUIState.Error -> {
-            Unit
+        is CharacterUIState.Loading -> {
+            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                CircularProgressIndicator()
+            }
         }
 
-        CharacterUIState.Loading -> {
-            CircularProgressIndicator()
+        is CharacterUIState.Error -> {
+            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                Text(text = uiState.message)
+            }
         }
 
         is CharacterUIState.Success -> {
-            val characters = uiState.allCharacters.collectAsLazyPagingItems()
-            ShowCharacterScreen(character = uiState.character, characters = characters)
+            ShowCharacterScreen(
+                character = uiState.character,
+                allCharacters = allCharacters,
+            )
         }
     }
 }
@@ -70,15 +79,15 @@ private fun HandleUIState(uiState: CharacterUIState) {
 @Composable
 fun ShowCharacterScreen(
     character: Character?,
-    characters: LazyPagingItems<Character>,
+    allCharacters: LazyPagingItems<Character>,
 ) {
-    CharacterList(characterOfTheDay = character, characters = characters)
+    CharacterList(characterOfTheDay = character, allCharacters = allCharacters)
 }
 
 @Composable
 fun CharacterList(
     characterOfTheDay: Character?,
-    characters: LazyPagingItems<Character>,
+    allCharacters: LazyPagingItems<Character>,
 ) {
     LazyVerticalGrid(
         modifier = Modifier.fillMaxSize(),
@@ -90,7 +99,7 @@ fun CharacterList(
             CharacterOfTheDay(character = characterOfTheDay)
         }
         when {
-            characters.loadState.refresh is LoadState.Loading && characters.itemCount == 0 -> {
+            allCharacters.loadState.refresh is LoadState.Loading && allCharacters.itemCount == 0 -> {
                 // first load
                 item(span = { GridItemSpan(2) }) {
                     Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
@@ -99,7 +108,7 @@ fun CharacterList(
                 }
             }
 
-            characters.loadState.refresh is LoadState.NotLoading && characters.itemCount == 0 -> {
+            allCharacters.loadState.refresh is LoadState.NotLoading && allCharacters.itemCount == 0 -> {
                 // empty items
                 item {
                     Text("Empty items")
@@ -107,13 +116,13 @@ fun CharacterList(
             }
 
             else -> {
-                items(characters.itemCount) { index ->
-                    characters[index]?.let {
+                items(allCharacters.itemCount) { index ->
+                    allCharacters[index]?.let {
                         CharacterItem(character = it)
                     }
                 }
 
-                if (characters.loadState.refresh is LoadState.Loading) {
+                if (allCharacters.loadState.append is LoadState.Loading) {
                     item(span = { GridItemSpan(2) }) {
                         Box(
                             modifier = Modifier.fillMaxSize(),
@@ -165,7 +174,7 @@ fun CharacterItem(character: Character) {
             Text(
                 text = character.name,
                 color = Color.White,
-                fontSize = 12.sp,
+                fontSize = 14.sp,
             )
         }
     }

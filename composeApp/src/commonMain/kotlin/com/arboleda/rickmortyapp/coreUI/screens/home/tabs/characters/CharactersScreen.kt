@@ -5,6 +5,7 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -96,7 +97,15 @@ fun CharacterList(
         verticalArrangement = Arrangement.spacedBy(16.dp),
     ) {
         item(span = { GridItemSpan(2) }) {
-            CharacterOfTheDay(character = characterOfTheDay)
+            Column(modifier = Modifier.fillMaxWidth()) {
+                Text(
+                    modifier = Modifier.padding(top = 16.dp).align(Alignment.CenterHorizontally),
+                    text = "Characters",
+                    textAlign = TextAlign.Center,
+                    fontSize = 24.sp,
+                )
+                CharacterOfTheDay(character = characterOfTheDay)
+            }
         }
         when {
             allCharacters.loadState.refresh is LoadState.Loading && allCharacters.itemCount == 0 -> {

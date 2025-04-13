@@ -3,7 +3,7 @@ package com.arboleda.rickmortyapp.ui.viewModels
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.cachedIn
-import com.arboleda.rickmortyapp.domain.usecases.CharacterModule
+import com.arboleda.rickmortyapp.domain.usecases.character.CharacterModule
 import com.arboleda.rickmortyapp.ui.states.CharacterUIState
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO

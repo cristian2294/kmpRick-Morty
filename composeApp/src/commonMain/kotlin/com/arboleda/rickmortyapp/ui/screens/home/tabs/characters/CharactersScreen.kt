@@ -1,4 +1,4 @@
-package com.arboleda.rickmortyapp.coreUI.screens.home.tabs.characters
+package com.arboleda.rickmortyapp.ui.screens.home.tabs.characters
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border

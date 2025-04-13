@@ -1,4 +1,4 @@
-package com.arboleda.rickmortyapp.coreUI.screens.home
+package com.arboleda.rickmortyapp.ui.screens.home
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.material3.Scaffold

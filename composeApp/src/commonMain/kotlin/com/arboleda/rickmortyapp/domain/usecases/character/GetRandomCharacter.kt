@@ -1,4 +1,4 @@
-package com.arboleda.rickmortyapp.domain.usecases
+package com.arboleda.rickmortyapp.domain.usecases.character
 
 import com.arboleda.rickmortyapp.domain.model.Character
 import com.arboleda.rickmortyapp.domain.model.CharacterOfTheDay

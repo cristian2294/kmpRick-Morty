@@ -1,19 +1,32 @@
 package com.arboleda.rickmortyapp.ui.screens.home.tabs.episodes
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Close
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.ElevatedCard
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -21,6 +34,7 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import app.cash.paging.compose.LazyPagingItems
 import app.cash.paging.compose.collectAsLazyPagingItems
+import com.arboleda.rickmortyapp.coreUI.components.CustomVideoPlayer
 import com.arboleda.rickmortyapp.coreUI.components.LoadingState
 import com.arboleda.rickmortyapp.coreUI.components.PagingType
 import com.arboleda.rickmortyapp.coreUI.components.PagingWrapper
@@ -55,9 +69,9 @@ private fun HandleUiState(
         }
 
         is EpisodeUIState.Success -> {
-            val episodes = uiState.episodes
+            val episodes = uiState.episodeState.episodes
             val lazyPagingItems = episodes.collectAsLazyPagingItems()
-            ShowEpisodeScreen(lazyPagingItems, episodeViewModel)
+            ShowEpisodeScreen(lazyPagingItems, episodeViewModel, uiState)
         }
     }
 }
@@ -66,6 +80,7 @@ private fun HandleUiState(
 private fun ShowEpisodeScreen(
     lazyPagingItems: LazyPagingItems<Episode>,
     episodeViewModel: EpisodeViewModel,
+    uiState: EpisodeUIState.Success,
 ) {
     Column(modifier = Modifier.fillMaxWidth()) {
         Text(
@@ -82,9 +97,57 @@ private fun ShowEpisodeScreen(
                 LoadingState()
             },
             itemView = {
-                EpisodesList(episodes = it, episodeViewModel = episodeViewModel)
+                EpisodesList(episodes = it, episodeViewModel = episodeViewModel) { url ->
+                    episodeViewModel.onPlaySelected(url)
+                }
             },
         )
+        if (uiState.episodeState.playVideo.isNotBlank()) {
+            VideoPlayer(uiState = uiState) {
+                episodeViewModel.onCloseVideoSelected()
+            }
+        }
+    }
+}
+
+@Composable
+private fun VideoPlayer(
+    uiState: EpisodeUIState.Success,
+    onCloseVideoSelected: () -> Unit,
+) {
+    ElevatedCard(
+        modifier =
+            Modifier
+                .fillMaxWidth()
+                .height(250.dp)
+                .padding(16.dp)
+                .border(2.dp, Color.Green, CardDefaults.elevatedShape),
+    ) {
+        Box(modifier = Modifier.background(Color.Black)) {
+            Box(
+                modifier = Modifier.padding(16.dp),
+                contentAlignment = Alignment.Center,
+            ) {
+                CustomVideoPlayer(
+                    modifier = Modifier.fillMaxWidth().height(200.dp),
+                    url = uiState.episodeState.playVideo,
+                )
+            }
+            Row {
+                Spacer(modifier = Modifier.weight(1f))
+                IconButton(
+                    onClick = { onCloseVideoSelected() },
+                    modifier = Modifier.size(40.dp).padding(8.dp),
+                    colors =
+                        IconButtonDefaults.iconButtonColors(
+                            containerColor = Color.DarkGray,
+                            contentColor = Color.Green,
+                        ),
+                ) {
+                    Icon(imageVector = Icons.Filled.Close, contentDescription = "Close")
+                }
+            }
+        }
     }
 }
 
@@ -92,15 +155,22 @@ private fun ShowEpisodeScreen(
 fun EpisodesList(
     episodes: Episode,
     episodeViewModel: EpisodeViewModel,
+    onEpisodeSelected: (String) -> Unit,
 ) {
     Column(
-        modifier = Modifier.width(120.dp).padding(horizontal = 8.dp).clickable { },
+        modifier =
+            Modifier
+                .width(120.dp)
+                .padding(horizontal = 8.dp)
+                .clickable {
+                    onEpisodeSelected(episodes.videoUrl)
+                },
     ) {
         Image(
             modifier = Modifier.height(150.dp).fillMaxWidth(),
             contentDescription = null,
             contentScale = ContentScale.Crop,
-            painter = painterResource(episodeViewModel.getSeasonImage(episodes.season)), // Usa la variable
+            painter = painterResource(episodeViewModel.getSeasonImage(episodes.season)),
         )
     }
 }

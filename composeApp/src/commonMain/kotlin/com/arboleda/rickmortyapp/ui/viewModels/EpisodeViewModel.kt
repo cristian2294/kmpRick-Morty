@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import androidx.paging.cachedIn
 import com.arboleda.rickmortyapp.domain.model.SeasonEpisode
 import com.arboleda.rickmortyapp.domain.usecases.episode.EpisodeModule
+import com.arboleda.rickmortyapp.ui.states.EpisodeState
 import com.arboleda.rickmortyapp.ui.states.EpisodeUIState
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
@@ -47,7 +48,13 @@ class EpisodeViewModel(
                         _episodeState.value =
                             EpisodeUIState.Error(message = it.message ?: "Unknown error")
                     }.collect { episodes ->
-                        _episodeState.value = EpisodeUIState.Success(episodes = flowOf(episodes))
+                        _episodeState.value =
+                            EpisodeUIState.Success(
+                                episodeState =
+                                    EpisodeState(
+                                        episodes = flowOf(episodes),
+                                    ),
+                            )
                     }
             }
         }
@@ -64,4 +71,32 @@ class EpisodeViewModel(
             SeasonEpisode.SEASON_7 -> Res.drawable.S7
             SeasonEpisode.SEASON_UNKNOWN -> Res.drawable.S1
         }
+
+    fun onPlaySelected(url: String) {
+        val currentState = _episodeState.value
+        if (currentState is EpisodeUIState.Success) {
+            _episodeState.value =
+                EpisodeUIState.Success(
+                    episodeState =
+                        EpisodeState(
+                            episodes = currentState.episodeState.episodes,
+                            playVideo = url,
+                        ),
+                )
+        }
+    }
+
+    fun onCloseVideoSelected() {
+        val currentState = _episodeState.value
+        if (currentState is EpisodeUIState.Success) {
+            _episodeState.value =
+                EpisodeUIState.Success(
+                    episodeState =
+                        EpisodeState(
+                            episodes = currentState.episodeState.episodes,
+                            playVideo = "",
+                        ),
+                )
+        }
+    }
 }

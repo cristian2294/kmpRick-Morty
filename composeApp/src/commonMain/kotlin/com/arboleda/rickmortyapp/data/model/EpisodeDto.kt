@@ -38,14 +38,14 @@ data class EpisodeDto(
 
     private fun getVideoUrlFromSeason(season: SeasonEpisode): String =
         when (season) {
-            SEASON_1 -> "https://www.youtube.com/watch?v=8F8BoM0Wkjk"
-            SEASON_2 -> "https://www.youtube.com/watch?v=8F8BoM0Wkjk"
-            SEASON_3 -> "https://www.youtube.com/watch?v=8F8BoM0Wkjk"
-            SEASON_4 -> "https://www.youtube.com/watch?v=8F8BoM0Wkjk"
-            SEASON_5 -> "https://www.youtube.com/watch?v=8F8BoM0Wkjk"
-            SEASON_6 -> "https://www.youtube.com/watch?v=8F8BoM0Wkjk"
-            SEASON_7 -> "https://www.youtube.com/watch?v=8F8BoM0Wkjk"
-            SEASON_UNKNOWN -> "https://www.youtube.com/watch?v=8F8BoM0Wkjk"
+            SEASON_2 -> "https://ftnfjalrmxkncjjsvbwe.supabase.co/storage/v1/object/public/rmkmp//videoplayback.mp4"
+            SEASON_1 -> "https://ftnfjalrmxkncjjsvbwe.supabase.co/storage/v1/object/public/rmkmp//videoplayback.mp4"
+            SEASON_3 -> "https://ftnfjalrmxkncjjsvbwe.supabase.co/storage/v1/object/public/rmkmp//videoplayback.mp4"
+            SEASON_4 -> "https://ftnfjalrmxkncjjsvbwe.supabase.co/storage/v1/object/public/rmkmp//videoplayback.mp4"
+            SEASON_5 -> "https://ftnfjalrmxkncjjsvbwe.supabase.co/storage/v1/object/public/rmkmp//videoplayback.mp4"
+            SEASON_6 -> "https://ftnfjalrmxkncjjsvbwe.supabase.co/storage/v1/object/public/rmkmp//videoplayback.mp4"
+            SEASON_7 -> "https://ftnfjalrmxkncjjsvbwe.supabase.co/storage/v1/object/public/rmkmp//videoplayback.mp4"
+            SEASON_UNKNOWN -> "https://ftnfjalrmxkncjjsvbwe.supabase.co/storage/v1/object/public/rmkmp//videoplayback.mp4"
         }
 
     private fun getSeasonFromEpisode(episode: String): SeasonEpisode =

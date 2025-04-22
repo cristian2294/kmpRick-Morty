@@ -3,16 +3,12 @@ package com.arboleda.rickmortyapp.ui.screens.home.tabs.characters
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.grid.GridCells
-import androidx.compose.foundation.lazy.grid.GridItemSpan
-import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CircularProgressIndicator
@@ -31,10 +27,12 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.paging.LoadState
 import app.cash.paging.compose.LazyPagingItems
 import app.cash.paging.compose.collectAsLazyPagingItems
 import coil3.compose.AsyncImage
+import com.arboleda.rickmortyapp.coreUI.components.LoadingState
+import com.arboleda.rickmortyapp.coreUI.components.PagingType
+import com.arboleda.rickmortyapp.coreUI.components.PagingWrapper
 import com.arboleda.rickmortyapp.domain.model.Character
 import com.arboleda.rickmortyapp.ui.states.CharacterUIState
 import com.arboleda.rickmortyapp.ui.viewModels.CharacterViewModel
@@ -43,17 +41,22 @@ import org.koin.core.annotation.KoinExperimentalAPI
 
 @OptIn(KoinExperimentalAPI::class)
 @Composable
-fun CharactersScreen() {
+fun CharactersScreen(navigateToDetailScreen: (Character) -> Unit) {
     val characterViewModel = koinViewModel<CharacterViewModel>()
     val uiState by characterViewModel.uiState.collectAsStateWithLifecycle()
     val allCharacters = characterViewModel.allCharacters.collectAsLazyPagingItems()
-    HandleUIState(uiState = uiState, allCharacters = allCharacters)
+    HandleUIState(
+        uiState = uiState,
+        allCharacters = allCharacters,
+        navigateToDetailScreen = navigateToDetailScreen,
+    )
 }
 
 @Composable
 private fun HandleUIState(
     uiState: CharacterUIState,
     allCharacters: LazyPagingItems<Character>,
+    navigateToDetailScreen: (Character) -> Unit,
 ) {
     when (uiState) {
         is CharacterUIState.Loading -> {
@@ -72,6 +75,7 @@ private fun HandleUIState(
             ShowCharacterScreen(
                 character = uiState.character,
                 allCharacters = allCharacters,
+                navigateToDetailScreen = navigateToDetailScreen,
             )
         }
     }
@@ -81,83 +85,48 @@ private fun HandleUIState(
 fun ShowCharacterScreen(
     character: Character?,
     allCharacters: LazyPagingItems<Character>,
+    navigateToDetailScreen: (Character) -> Unit,
 ) {
-    CharacterList(characterOfTheDay = character, allCharacters = allCharacters)
-}
-
-@Composable
-fun CharacterList(
-    characterOfTheDay: Character?,
-    allCharacters: LazyPagingItems<Character>,
-) {
-    LazyVerticalGrid(
-        modifier = Modifier.fillMaxSize(),
-        columns = GridCells.Fixed(2),
-        horizontalArrangement = Arrangement.spacedBy(16.dp),
-        verticalArrangement = Arrangement.spacedBy(16.dp),
-    ) {
-        item(span = { GridItemSpan(2) }) {
-            Column(modifier = Modifier.fillMaxWidth()) {
-                Text(
-                    modifier = Modifier.padding(top = 16.dp).align(Alignment.CenterHorizontally),
-                    text = "Characters",
-                    textAlign = TextAlign.Center,
-                    fontSize = 24.sp,
-                )
-                CharacterOfTheDay(character = characterOfTheDay)
-            }
-        }
-        when {
-            allCharacters.loadState.refresh is LoadState.Loading && allCharacters.itemCount == 0 -> {
-                // first load
-                item(span = { GridItemSpan(2) }) {
-                    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                        CircularProgressIndicator()
-                    }
+    Column(modifier = Modifier.fillMaxWidth()) {
+        Text(
+            modifier = Modifier.padding(top = 16.dp).align(Alignment.CenterHorizontally),
+            text = "Characters",
+            textAlign = TextAlign.Center,
+            fontSize = 24.sp,
+        )
+        PagingWrapper(
+            pagingType = PagingType.VERTICAL_GRID,
+            items = allCharacters,
+            initialView = {
+                LoadingState()
+            },
+            itemView = {
+                CharacterItem(it) { character ->
+                    navigateToDetailScreen(character)
                 }
-            }
-
-            allCharacters.loadState.refresh is LoadState.NotLoading && allCharacters.itemCount == 0 -> {
-                // empty items
-                item {
-                    Text("Empty items")
-                }
-            }
-
-            else -> {
-                items(allCharacters.itemCount) { index ->
-                    allCharacters[index]?.let {
-                        CharacterItem(character = it)
-                    }
-                }
-
-                if (allCharacters.loadState.append is LoadState.Loading) {
-                    item(span = { GridItemSpan(2) }) {
-                        Box(
-                            modifier = Modifier.fillMaxSize(),
-                            contentAlignment = Alignment.Center,
-                        ) {
-                            CircularProgressIndicator()
-                        }
-                    }
-                }
-            }
-        }
+            },
+            characterOfTheDay = character,
+        )
     }
 }
 
 @Composable
-fun CharacterItem(character: Character) {
+fun CharacterItem(
+    character: Character,
+    onItemSelected: (Character) -> Unit,
+) {
     Box(
         modifier =
             Modifier
                 .clip(RoundedCornerShape(24))
                 .border(
-                    2.dp,
+                    1.dp,
                     Color.Green,
                     shape = RoundedCornerShape(0, 24, 0, 24),
                 ).fillMaxSize()
-                .clickable { },
+                .clickable {
+                    onItemSelected(character)
+                },
         contentAlignment = Alignment.BottomCenter,
     ) {
         AsyncImage(
@@ -196,7 +165,7 @@ fun CharacterOfTheDay(character: Character?) {
             Modifier
                 .fillMaxWidth()
                 .height(400.dp)
-                .padding(horizontal = 16.dp, vertical = 32.dp),
+                .padding(start = 16.dp, end = 16.dp, top = 16.dp, bottom = 8.dp),
         shape = RoundedCornerShape(12),
     ) {
         Box(contentAlignment = Alignment.BottomStart) {

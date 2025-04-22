@@ -9,10 +9,15 @@ sealed class EpisodeUIState {
     data object Loading : EpisodeUIState()
 
     data class Success(
-        val episodes: Flow<PagingData<Episode>> = emptyFlow(),
+        val episodeState: EpisodeState,
     ) : EpisodeUIState()
 
     data class Error(
         val message: String,
     ) : EpisodeUIState()
 }
+
+data class EpisodeState(
+    val episodes: Flow<PagingData<Episode>> = emptyFlow(),
+    val playVideo: String = "",
+)

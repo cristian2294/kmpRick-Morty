@@ -1,5 +1,6 @@
 package com.arboleda.rickmortyapp.coreUI.components
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.lazy.LazyColumn
@@ -13,6 +14,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.paging.LoadState
 import app.cash.paging.compose.LazyPagingItems
+import com.arboleda.rickmortyapp.coreUI.BackgroundPrimaryColor
 import com.arboleda.rickmortyapp.domain.model.Character
 import com.arboleda.rickmortyapp.ui.screens.home.tabs.characters.CharacterOfTheDay
 
@@ -65,7 +67,7 @@ fun <T : Any> PagingWrapper(
 
                 PagingType.VERTICAL_GRID -> {
                     LazyVerticalGrid(
-                        modifier = Modifier.fillMaxSize(),
+                        modifier = Modifier.fillMaxSize().background(BackgroundPrimaryColor),
                         columns = GridCells.Fixed(2),
                         horizontalArrangement = Arrangement.spacedBy(16.dp),
                         verticalArrangement = Arrangement.spacedBy(16.dp),

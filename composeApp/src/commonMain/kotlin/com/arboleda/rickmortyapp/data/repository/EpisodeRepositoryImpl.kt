@@ -24,4 +24,24 @@ class EpisodeRepositoryImpl(
                 ),
             pagingSourceFactory = { episodePagingSource },
         ).flow
+
+    override suspend fun getEpisodesForCharacter(episodes: List<String>): List<Episode> {
+        if (episodes.isEmpty()) return emptyList()
+
+        return if (episodes.size > 1) {
+            try {
+                apiService
+                    .getMultipleEpisodesById(episodesId = episodes.joinToString(","))
+                    .map { it.toDomain() }
+            } catch (e: Exception) {
+                throw e
+            }
+        } else {
+            try {
+                listOf(apiService.getSingleEpisodeById(episodeId = episodes.first()).toDomain())
+            } catch (e: Exception) {
+                throw e
+            }
+        }
+    }
 }

@@ -5,6 +5,7 @@ import com.arboleda.rickmortyapp.domain.usecases.character.GetAllCharacters
 import com.arboleda.rickmortyapp.domain.usecases.character.GetRandomCharacter
 import com.arboleda.rickmortyapp.domain.usecases.episode.EpisodeModule
 import com.arboleda.rickmortyapp.domain.usecases.episode.GetAllEpisodes
+import com.arboleda.rickmortyapp.domain.usecases.episode.GetEpisodesForCharacter
 import org.koin.core.module.dsl.factoryOf
 import org.koin.dsl.module
 
@@ -17,5 +18,6 @@ val domainModule =
 
         // Episodes
         factoryOf(::GetAllEpisodes)
+        factoryOf(::GetEpisodesForCharacter)
         factoryOf(::EpisodeModule)
     }

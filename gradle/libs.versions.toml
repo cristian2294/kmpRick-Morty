@@ -33,7 +33,8 @@ paging3 = "3.3.0-alpha02-0.4.0"
 roomCommon = "2.7.0-rc03"
 ksp = "2.1.10-1.0.31"
 androidx-sqlBundled = "2.5.0-rc03"
-
+#Splash
+core-splashscreen = "1.0.1"
 
 [libraries]
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
@@ -78,6 +79,9 @@ paging-compose-common = { module = "app.cash.paging:paging-compose-common", vers
 room-runtime = { group = "androidx.room", name = "room-runtime", version.ref = "roomCommon"}
 room-compiler = { group = "androidx.room", name = "room-compiler", version.ref = "roomCommon"}
 androidx-sqlite-bundled = { group = "androidx.sqlite", name = "sqlite-bundled", version.ref = "androidx-sqlBundled"}
+
+#splash Android
+core-splashscreen = { group = "androidx.core", name = "core-splashscreen", version.ref = "core-splashscreen" }
 
 #viewmodel ios
 viewmodel-compose = { module = "org.jetbrains.androidx.lifecycle:lifecycle-viewmodel-compose", version.ref = "viewmodel" }

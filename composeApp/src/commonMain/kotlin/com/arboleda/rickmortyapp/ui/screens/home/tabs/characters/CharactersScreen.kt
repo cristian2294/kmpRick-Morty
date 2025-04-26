@@ -30,6 +30,9 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import app.cash.paging.compose.LazyPagingItems
 import app.cash.paging.compose.collectAsLazyPagingItems
 import coil3.compose.AsyncImage
+import com.arboleda.rickmortyapp.coreUI.BackgroundPrimaryColor
+import com.arboleda.rickmortyapp.coreUI.DefaultTextColor
+import com.arboleda.rickmortyapp.coreUI.Green
 import com.arboleda.rickmortyapp.coreUI.components.LoadingState
 import com.arboleda.rickmortyapp.coreUI.components.PagingType
 import com.arboleda.rickmortyapp.coreUI.components.PagingWrapper
@@ -87,12 +90,14 @@ fun ShowCharacterScreen(
     allCharacters: LazyPagingItems<Character>,
     navigateToDetailScreen: (Character) -> Unit,
 ) {
-    Column(modifier = Modifier.fillMaxWidth()) {
+    Column(modifier = Modifier.fillMaxWidth().background(BackgroundPrimaryColor)) {
         Text(
             modifier = Modifier.padding(top = 16.dp).align(Alignment.CenterHorizontally),
             text = "Characters",
             textAlign = TextAlign.Center,
             fontSize = 24.sp,
+            fontWeight = FontWeight.SemiBold,
+            color = DefaultTextColor,
         )
         PagingWrapper(
             pagingType = PagingType.VERTICAL_GRID,
@@ -121,7 +126,7 @@ fun CharacterItem(
                 .clip(RoundedCornerShape(24))
                 .border(
                     1.dp,
-                    Color.Green,
+                    Green,
                     shape = RoundedCornerShape(0, 24, 0, 24),
                 ).fillMaxSize()
                 .clickable {
@@ -174,7 +179,7 @@ fun CharacterOfTheDay(character: Character?) {
                     Modifier
                         .fillMaxSize()
                         .background(
-                            Color.Green.copy(alpha = 0.5f),
+                            Green.copy(alpha = 0.5f),
                         ),
             )
 
@@ -192,7 +197,7 @@ fun CharacterOfTheDay(character: Character?) {
                         .background(
                             Brush.verticalGradient(
                                 0f to Color.White.copy(alpha = 0f),
-                                0.8f to Color.Black.copy(alpha = 9f),
+                                0.9f to Color.Black.copy(alpha = 7f),
                             ),
                         ),
             )

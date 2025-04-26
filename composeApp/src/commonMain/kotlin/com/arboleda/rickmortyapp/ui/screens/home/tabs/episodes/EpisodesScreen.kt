@@ -1,5 +1,6 @@
 package com.arboleda.rickmortyapp.ui.screens.home.tabs.episodes
 
+import androidx.compose.animation.AnimatedContent
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -8,6 +9,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -28,12 +30,16 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import app.cash.paging.compose.LazyPagingItems
 import app.cash.paging.compose.collectAsLazyPagingItems
+import com.arboleda.rickmortyapp.coreUI.BackgroundPrimaryColor
+import com.arboleda.rickmortyapp.coreUI.DefaultTextColor
+import com.arboleda.rickmortyapp.coreUI.PlaceholderColor
 import com.arboleda.rickmortyapp.coreUI.components.CustomVideoPlayer
 import com.arboleda.rickmortyapp.coreUI.components.LoadingState
 import com.arboleda.rickmortyapp.coreUI.components.PagingType
@@ -44,6 +50,8 @@ import com.arboleda.rickmortyapp.ui.viewModels.EpisodeViewModel
 import org.jetbrains.compose.resources.painterResource
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.annotation.KoinExperimentalAPI
+import rickmortyapp.composeapp.generated.resources.Res
+import rickmortyapp.composeapp.generated.resources.placeholder
 
 @OptIn(KoinExperimentalAPI::class)
 @Composable
@@ -82,12 +90,13 @@ private fun ShowEpisodeScreen(
     episodeViewModel: EpisodeViewModel,
     uiState: EpisodeUIState.Success,
 ) {
-    Column(modifier = Modifier.fillMaxWidth()) {
+    Column(modifier = Modifier.fillMaxSize().background(BackgroundPrimaryColor)) {
         Text(
             modifier = Modifier.padding(top = 16.dp).align(Alignment.CenterHorizontally),
             text = "Episodes",
             textAlign = TextAlign.Center,
             fontSize = 24.sp,
+            color = DefaultTextColor,
         )
         Spacer(modifier = Modifier.height(16.dp))
         PagingWrapper(
@@ -102,9 +111,34 @@ private fun ShowEpisodeScreen(
                 }
             },
         )
-        if (uiState.episodeState.playVideo.isNotBlank()) {
-            VideoPlayer(uiState = uiState) {
-                episodeViewModel.onCloseVideoSelected()
+        AnimatedContent(uiState.episodeState.playVideo.isNotBlank()) { condition ->
+            if (condition) {
+                VideoPlayer(uiState = uiState) {
+                    episodeViewModel.onCloseVideoSelected()
+                }
+            } else {
+                ElevatedCard(
+                    modifier =
+                        Modifier
+                            .fillMaxWidth()
+                            .padding(16.dp),
+                    colors = CardDefaults.elevatedCardColors(containerColor = PlaceholderColor),
+                ) {
+                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                        Image(
+                            painter = painterResource(Res.drawable.placeholder),
+                            contentDescription = null,
+                        )
+                        Spacer(modifier = Modifier.height(4.dp))
+                        Text(
+                            modifier = Modifier.padding(16.dp),
+                            text = "Please choose and play one episode for show it",
+                            color = DefaultTextColor,
+                            fontStyle = FontStyle.Italic,
+                            fontSize = 12.sp,
+                        )
+                    }
+                }
             }
         }
     }
@@ -172,5 +206,7 @@ fun EpisodesList(
             contentScale = ContentScale.Crop,
             painter = painterResource(episodeViewModel.getSeasonImage(episodes.season)),
         )
+        Spacer(modifier = Modifier.height(2.dp))
+        Text(text = episodes.episode, color = DefaultTextColor)
     }
 }

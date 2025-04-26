@@ -32,6 +32,6 @@ data class CharacterDto(
             species = species,
             gender = gender,
             origin = origin.name,
-            episode = episode.map { it.substringAfter("/") },
+            episode = episode.map { it.substringAfterLast("/") },
         )
 }

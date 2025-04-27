@@ -1,9 +1,12 @@
 package com.arboleda.rickmortyapp.di
 
 import com.arboleda.rickmortyapp.data.paging.CharacterPagingSource
+import com.arboleda.rickmortyapp.data.paging.EpisodePagingSource
 import com.arboleda.rickmortyapp.data.remote.ApiService
 import com.arboleda.rickmortyapp.data.repository.CharacterRepositoryImpl
+import com.arboleda.rickmortyapp.data.repository.EpisodeRepositoryImpl
 import com.arboleda.rickmortyapp.domain.repository.CharacterRepository
+import com.arboleda.rickmortyapp.domain.repository.EpisodeRepository
 import io.ktor.client.HttpClient
 import io.ktor.client.plugins.DefaultRequest
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
@@ -33,5 +36,7 @@ val dataModule =
 
         factoryOf(::ApiService)
         factoryOf(::CharacterPagingSource)
-        factory<CharacterRepository> { CharacterRepositoryImpl(get(), get()) }
+        factory<CharacterRepository> { CharacterRepositoryImpl(get(), get(), get()) }
+        factoryOf(::EpisodePagingSource)
+        factory<EpisodeRepository> { EpisodeRepositoryImpl(get(), get()) }
     }

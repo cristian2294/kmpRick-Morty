@@ -1,4 +1,4 @@
-package com.arboleda.rickmortyapp.domain.usecases
+package com.arboleda.rickmortyapp.domain.usecases.character
 
 import androidx.paging.PagingData
 import com.arboleda.rickmortyapp.domain.model.Character

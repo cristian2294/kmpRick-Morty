@@ -14,6 +14,14 @@ data class CharacterDto(
     val image: String,
     @SerialName("name")
     val name: String,
+    @SerialName("species")
+    val species: String,
+    @SerialName("gender")
+    val gender: String,
+    @SerialName("origin")
+    val origin: OriginDto,
+    @SerialName("episode")
+    val episode: List<String>,
 ) {
     fun toDomain() =
         Character(
@@ -21,5 +29,9 @@ data class CharacterDto(
             isAlive = status.lowercase() == "alive",
             image = image,
             name = name,
+            species = species,
+            gender = gender,
+            origin = origin.name,
+            episode = episode.map { it.substringAfterLast("/") },
         )
 }

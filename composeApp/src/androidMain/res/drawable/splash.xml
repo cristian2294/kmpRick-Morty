@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="100dp"
+    android:height="100dp"
+    android:viewportWidth="100"
+    android:viewportHeight="100">
+
+    <!-- Cuerpo principal de la nave -->
+    <path
+        android:fillColor="#000000"
+        android:pathData="M20,50 a30,15 0 1,0 60,0 a30,15 0 1,0 -60,0" />
+
+    <!-- Cúpula -->
+    <path
+        android:fillColor="#000000"
+        android:pathData="M35,42 a15,8 0 1,0 30,0 a15,8 0 1,0 -30,0" />
+
+    <!-- Patas de aterrizaje -->
+    <path
+        android:strokeColor="#000000"
+        android:strokeWidth="2"
+        android:pathData="M35,60 L30,70" />
+    <path
+        android:strokeColor="#000000"
+        android:strokeWidth="2"
+        android:pathData="M65,60 L70,70" />
+
+    <!-- Luces debajo de la nave -->
+    <path
+        android:fillColor="#000000"
+        android:pathData="M40,57 m-2,0 a2,2 0 1,0 4,0 a2,2 0 1,0 -4,0" />
+    <path
+        android:fillColor="#000000"
+        android:pathData="M50,58 m-2,0 a2,2 0 1,0 4,0 a2,2 0 1,0 -4,0" />
+    <path
+        android:fillColor="#000000"
+        android:pathData="M60,57 m-2,0 a2,2 0 1,0 4,0 a2,2 0 1,0 -4,0" />
+
+</vector>
+

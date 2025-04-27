@@ -1,5 +1,7 @@
 package com.arboleda.rickmortyapp.coreUI.navigation
 
+import kotlinx.serialization.Serializable
+
 sealed class Routes(
     val route: String,
 ) {
@@ -10,3 +12,9 @@ sealed class Routes(
 
     data object CharactersScreen : Routes("CharactersScreen")
 }
+
+// Character Detail
+@Serializable
+data class CharacterDetail(
+    val character: String,
+)

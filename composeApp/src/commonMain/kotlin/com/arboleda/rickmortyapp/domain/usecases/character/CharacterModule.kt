@@ -1,4 +1,4 @@
-package com.arboleda.rickmortyapp.domain.usecases
+package com.arboleda.rickmortyapp.domain.usecases.character
 
 data class CharacterModule(
     val getCharacterForIdUC: GetRandomCharacter,

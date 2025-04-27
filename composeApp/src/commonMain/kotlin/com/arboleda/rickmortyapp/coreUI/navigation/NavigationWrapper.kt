@@ -4,7 +4,11 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.arboleda.rickmortyapp.coreUI.screens.home.HomeScreen
+import androidx.navigation.toRoute
+import com.arboleda.rickmortyapp.domain.model.Character
+import com.arboleda.rickmortyapp.ui.screens.CharacterDetailScreen
+import com.arboleda.rickmortyapp.ui.screens.home.HomeScreen
+import kotlinx.serialization.json.Json
 
 @Composable
 fun NavigationWrapper() {
@@ -12,7 +16,13 @@ fun NavigationWrapper() {
 
     NavHost(navController = mainNavController, startDestination = Routes.HomeScreen.route) {
         composable(route = Routes.HomeScreen.route) {
-            HomeScreen()
+            HomeScreen(mainNavController = mainNavController)
+        }
+
+        composable<CharacterDetail> { navBackStackEntry ->
+            val characterDetail = navBackStackEntry.toRoute<CharacterDetail>()
+            val character = Json.decodeFromString<Character>(characterDetail.character)
+            CharacterDetailScreen(character = character)
         }
     }
 }

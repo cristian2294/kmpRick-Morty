@@ -2,7 +2,8 @@ package com.arboleda.rickmortyapp.ui.viewModels
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.arboleda.rickmortyapp.domain.usecases.CharacterModule
+import androidx.paging.cachedIn
+import com.arboleda.rickmortyapp.domain.usecases.character.CharacterModule
 import com.arboleda.rickmortyapp.ui.states.CharacterUIState
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
@@ -19,9 +20,10 @@ class CharacterViewModel(
     private val _uiState = MutableStateFlow<CharacterUIState>(CharacterUIState.Loading)
     val uiState: StateFlow<CharacterUIState> = _uiState
 
+    val allCharacters = characterModule.getAllCharactersUC().cachedIn(viewModelScope)
+
     init {
         getRandomCharacter()
-        getAllCharacters()
     }
 
     /**
@@ -39,24 +41,6 @@ class CharacterViewModel(
                             CharacterUIState.Error(message = it.message ?: "Unknown error")
                     }.collect { character ->
                         _uiState.value = CharacterUIState.Success(character = character)
-                    }
-            }
-        }
-    }
-
-    private fun getAllCharacters() {
-        viewModelScope.launch {
-            withContext(Dispatchers.IO) {
-                characterModule
-                    .getAllCharactersUC()
-                    .onStart {
-                        _uiState.value = CharacterUIState.Loading
-                    }.catch {
-                        _uiState.value =
-                            CharacterUIState.Error(message = it.message ?: "Unknown error")
-                    }.collect {
-                        _uiState.value =
-                            CharacterUIState.Success(allCharacters = characterModule.getAllCharactersUC())
                     }
             }
         }
